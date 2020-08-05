@@ -1,8 +1,8 @@
 name: flutter_razorpay
 description: Flutter plugin for Razorpay
 version: 0.0.1
-author:
-homepage:
+author: Agnostech Innovations LLP
+homepage: https://github.com/agnostech/flutter_razorpay.git
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -11,6 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  eventify: ^0.1.4
 
 dev_dependencies:
   flutter_test:

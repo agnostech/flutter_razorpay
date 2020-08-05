@@ -1,6 +1,5 @@
 package `in`.agnostech.flutter_razorpay
 
-import android.util.Log
 import androidx.annotation.NonNull;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin

@@ -1,9 +1,7 @@
 package `in`.agnostech.flutter_razorpay
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.razorpay.*
 import io.flutter.plugin.common.MethodChannel
 import org.json.JSONObject
@@ -12,9 +10,10 @@ import java.lang.Exception
 
 class FlutterRazorpayDelegate : PaymentResultWithDataListener, ExternalWalletListener {
 
+    private var pendingReply: Map<String, Any>? = null
     private var pendingResult: MethodChannel.Result? = null
 
-    fun openCheckout(activity: Activity, data: Map<String, Any>,  result: MethodChannel.Result) {
+    fun openCheckout(activity: Activity, data: Map<String, Any>, result: MethodChannel.Result) {
         pendingResult = result
 
         try {
@@ -30,22 +29,47 @@ class FlutterRazorpayDelegate : PaymentResultWithDataListener, ExternalWalletLis
         }
     }
 
-    private fun sendResult(data: Map<String, Any>? ) {
-        pendingResult?.success(true)
+    private fun sendResult(data: Map<String, Any>) {
+        pendingReply = if (pendingResult != null) {
+            pendingResult!!.success(data)
+            null
+        } else {
+            data
+        }
+    }
+
+    fun sync(result: MethodChannel.Result) {
+        result.success(pendingReply)
+        pendingReply = null
     }
 
     override fun onPaymentError(code: Int, description: String, p2: PaymentData) {
-        Log.d("RAZORPAY FLUTTER ERROR", description)
-        sendResult(null)
+        val data = mapOf("status" to "payment.error", "data" to mapOf("code" to code, "message" to description))
+        sendResult(data)
     }
 
     override fun onPaymentSuccess(paymentId: String, paymentData: PaymentData) {
-        Log.d("RAZORPAY FLUTTER S", paymentData.data.toString())
-        sendResult(null)
+        val data = mapOf(
+                "status" to "payment.success",
+                "data" to mapOf(
+                        "orderId" to paymentData.orderId,
+                        "paymentId" to paymentData.paymentId,
+                        "signature" to paymentData.signature
+                )
+        )
+        sendResult(data)
     }
 
-    override fun onExternalWalletSelected(p0: String?, p1: PaymentData) {
-        Log.d("RAZORPAY FLUTTER EW", p1.data.toString())
-        sendResult(null)
+    override fun onExternalWalletSelected(walletName: String?, paymentData: PaymentData) {
+        val data = mapOf(
+                "status" to "payment.external",
+                "data" to mapOf(
+                        "walletName" to walletName,
+                        "orderId" to paymentData.orderId,
+                        "paymentId" to paymentData.paymentId,
+                        "signature" to paymentData.signature
+                )
+        )
+        sendResult(data)
     }
 }

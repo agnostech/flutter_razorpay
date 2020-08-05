@@ -21,7 +21,8 @@ class FlutterRazorpayMethodChannelHandler(private val context: Context) : Method
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         Log.d("called", "method call")
         when (call.method) {
-            "openCheckout" -> razorpayDelegate.openCheckout(activityContext, call.arguments as Map<String, Any>, result)
+            "openCheckout" -> razorpayDelegate.openCheckout(activityContext, call.arguments as  Map<String, Any>, result)
+            "sync" -> razorpayDelegate.sync(result)
         }
     }
 
