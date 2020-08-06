@@ -3,7 +3,6 @@ package `in`.agnostech.flutter_razorpay
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.razorpay.Checkout
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -19,7 +18,7 @@ class FlutterRazorpayMethodChannelHandler(private val context: Context) : Method
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
-        Log.d("called", "method call")
+        
         when (call.method) {
             "openCheckout" -> razorpayDelegate.openCheckout(activityContext, call.arguments as  Map<String, Any>, result)
             "sync" -> razorpayDelegate.sync(result)

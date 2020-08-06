@@ -33,12 +33,12 @@ class FlutterRazorpay {
     parseResponse(response, _emitter);
   }
 
-  static void openCheckout(String apiKey, Map<String, Object> data) async {
-    if (apiKey == null) {
+  static void openCheckout(String apiKeyId, Map<String, Object> data) async {
+    if (apiKeyId == null) {
       return Future.error(
           "API Key ID is required. Pass the exisiting API Key ID or generate a new API key from the Razorpay dashboard.");
     }
-    data['key'] = apiKey;
+    data['key'] = apiKeyId;
 
     if (!data.containsKey("amount")) {
       return Future.error('amount is a required field in the data map');
